@@ -4,4 +4,8 @@ export const { docs, meta } = defineDocs({
   dir: 'content/docs',
 });
 
+export const { docs: projectDocs, meta: projectMeta } = defineDocs({
+  dir: 'content/project-management',
+});
+
 export default defineConfig();

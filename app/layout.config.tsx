@@ -1,4 +1,4 @@
-import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
+import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
 
 /**
  * Shared layout configurations
@@ -9,13 +9,28 @@ import type { BaseLayoutProps } from 'fumadocs-ui/layouts/shared';
  */
 export const baseOptions: BaseLayoutProps = {
   nav: {
-    title: 'My App',
+    title: "CEL Developer",
   },
   links: [
     {
-      text: 'Documentation',
-      url: '/docs',
-      active: 'nested-url',
+      text: "Documentation",
+      url: "/docs",
+      active: "nested-url",
+    },
+     {
+      text: "Project management",
+      url: "/project-management",
+      active: "nested-url",
+    },
+    {
+      text: "Report issues",
+      url: "/report-issues",
+      active: "nested-url",
+    },
+    {
+      text: "Log work",
+      url: "/docs",
+      active: "nested-url",
     },
   ],
 };
