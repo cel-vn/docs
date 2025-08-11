@@ -10,12 +10,11 @@ const inter = Inter({
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
-    <SpeedInsights>
     <html lang="en" className={inter.className} suppressHydrationWarning>
       <body className="flex flex-col min-h-screen">
         <RootProvider>{children}</RootProvider>
+        <SpeedInsights />
       </body>
     </html>
-    </SpeedInsights>
   );
 }

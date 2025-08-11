@@ -16,22 +16,32 @@ class EdgeConfigService {
         const users = await get<User[]>(this.USERS_KEY);
         return users || [];
       } else {
-        // Use mock storage as fallback
-        const users = mockStorage.get(this.USERS_KEY) || [];
-        return users;
+        // Use file storage as fallback in development
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.getAllUsers();
       }
     } catch (error) {
       console.error('Error getting users:', error);
-      // Fallback to mock storage on error
-      const users = mockStorage.get(this.USERS_KEY) || [];
-      return users;
+      // Fallback to file storage on error
+      try {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.getAllUsers();
+      } catch (fallbackError) {
+        console.error('File storage fallback error:', fallbackError);
+        return mockStorage.get(this.USERS_KEY) || [];
+      }
     }
   }
 
   async getUserByEmail(email: string): Promise<User | null> {
     try {
-      const users = await this.getAllUsers();
-      return users.find(user => user.email === email) || null;
+      if (process.env.EDGE_CONFIG) {
+        const users = await this.getAllUsers();
+        return users.find(user => user.email === email) || null;
+      } else {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.getUserByEmail(email);
+      }
     } catch (error) {
       console.error('Error getting user by email:', error);
       return null;
@@ -40,8 +50,13 @@ class EdgeConfigService {
 
   async getUserById(id: string): Promise<User | null> {
     try {
-      const users = await this.getAllUsers();
-      return users.find(user => user.id === id) || null;
+      if (process.env.EDGE_CONFIG) {
+        const users = await this.getAllUsers();
+        return users.find(user => user.id === id) || null;
+      } else {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.getUserById(id);
+      }
     } catch (error) {
       console.error('Error getting user by id:', error);
       return null;
@@ -50,16 +65,21 @@ class EdgeConfigService {
 
   async createUser(userData: Omit<User, 'id' | 'createdAt'>): Promise<User> {
     try {
-      const users = await this.getAllUsers();
-      const newUser: User = {
-        ...userData,
-        id: this.generateId(),
-        createdAt: new Date().toISOString(),
-      };
-      
-      const updatedUsers = [...users, newUser];
-      await this.updateUsers(updatedUsers);
-      return newUser;
+      if (process.env.EDGE_CONFIG) {
+        const users = await this.getAllUsers();
+        const newUser: User = {
+          ...userData,
+          id: this.generateId(),
+          createdAt: new Date().toISOString(),
+        };
+        
+        const updatedUsers = [...users, newUser];
+        await this.updateUsers(updatedUsers);
+        return newUser;
+      } else {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.createUser(userData);
+      }
     } catch (error) {
       console.error('Error creating user:', error);
       throw new Error('Failed to create user');
@@ -68,16 +88,21 @@ class EdgeConfigService {
 
   async updateUser(id: string, updates: Partial<User>): Promise<User | null> {
     try {
-      const users = await this.getAllUsers();
-      const userIndex = users.findIndex(user => user.id === id);
-      
-      if (userIndex === -1) {
-        return null;
-      }
+      if (process.env.EDGE_CONFIG) {
+        const users = await this.getAllUsers();
+        const userIndex = users.findIndex(user => user.id === id);
+        
+        if (userIndex === -1) {
+          return null;
+        }
 
-      users[userIndex] = { ...users[userIndex], ...updates };
-      await this.updateUsers(users);
-      return users[userIndex];
+        users[userIndex] = { ...users[userIndex], ...updates };
+        await this.updateUsers(users);
+        return users[userIndex];
+      } else {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.updateUser(id, updates);
+      }
     } catch (error) {
       console.error('Error updating user:', error);
       throw new Error('Failed to update user');
@@ -86,15 +111,20 @@ class EdgeConfigService {
 
   async deleteUser(id: string): Promise<boolean> {
     try {
-      const users = await this.getAllUsers();
-      const filteredUsers = users.filter(user => user.id !== id);
-      
-      if (filteredUsers.length === users.length) {
-        return false; // User not found
-      }
+      if (process.env.EDGE_CONFIG) {
+        const users = await this.getAllUsers();
+        const filteredUsers = users.filter(user => user.id !== id);
+        
+        if (filteredUsers.length === users.length) {
+          return false; // User not found
+        }
 
-      await this.updateUsers(filteredUsers);
-      return true;
+        await this.updateUsers(filteredUsers);
+        return true;
+      } else {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.deleteUser(id);
+      }
     } catch (error) {
       console.error('Error deleting user:', error);
       throw new Error('Failed to delete user');
@@ -110,31 +140,41 @@ class EdgeConfigService {
         const otps = await get<OTP[]>(this.OTPS_KEY);
         return otps || [];
       } else {
-        // Use mock storage as fallback
-        const otps = mockStorage.get(this.OTPS_KEY) || [];
-        return otps;
+        // Use file storage as fallback
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.getAllOTPs();
       }
     } catch (error) {
       console.error('Error getting OTPs:', error);
-      // Fallback to mock storage on error
-      const otps = mockStorage.get(this.OTPS_KEY) || [];
-      return otps;
+      // Fallback to file storage
+      try {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.getAllOTPs();
+      } catch (fallbackError) {
+        console.error('File storage fallback error:', fallbackError);
+        return mockStorage.get(this.OTPS_KEY) || [];
+      }
     }
   }
 
   async getOTPByEmail(email: string): Promise<OTP | null> {
     try {
-      const otps = await this.getAllOTPs();
-      const validOTPs = otps.filter(otp => 
-        otp.email === email && 
-        !otp.isUsed && 
-        new Date(otp.expiresAt) > new Date()
-      );
-      
-      // Return the most recent valid OTP
-      return validOTPs.sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )[0] || null;
+      if (process.env.EDGE_CONFIG) {
+        const otps = await this.getAllOTPs();
+        const validOTPs = otps.filter(otp => 
+          otp.email === email && 
+          !otp.isUsed && 
+          new Date(otp.expiresAt) > new Date()
+        );
+        
+        // Return the most recent valid OTP
+        return validOTPs.sort((a, b) => 
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )[0] || null;
+      } else {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.getOTPByEmail(email);
+      }
     } catch (error) {
       console.error('Error getting OTP by email:', error);
       return null;
@@ -143,29 +183,34 @@ class EdgeConfigService {
 
   async createOTP(email: string, code: string, expiryMinutes: number = 5): Promise<OTP> {
     try {
-      const otps = await this.getAllOTPs();
-      const expiresAt = new Date();
-      expiresAt.setMinutes(expiresAt.getMinutes() + expiryMinutes);
+      if (process.env.EDGE_CONFIG) {
+        const otps = await this.getAllOTPs();
+        const expiresAt = new Date();
+        expiresAt.setMinutes(expiresAt.getMinutes() + expiryMinutes);
 
-      const newOTP: OTP = {
-        id: this.generateId(),
-        email,
-        code,
-        expiresAt: expiresAt.toISOString(),
-        attempts: 0,
-        isUsed: false,
-        createdAt: new Date().toISOString(),
-      };
+        const newOTP: OTP = {
+          id: this.generateId(),
+          email,
+          code,
+          expiresAt: expiresAt.toISOString(),
+          attempts: 0,
+          isUsed: false,
+          createdAt: new Date().toISOString(),
+        };
 
-      // Clean up old OTPs for this email
-      const cleanedOTPs = otps.filter(otp => 
-        otp.email !== email || 
-        (new Date(otp.expiresAt) > new Date() && !otp.isUsed)
-      );
+        // Clean up old OTPs for this email
+        const cleanedOTPs = otps.filter(otp => 
+          otp.email !== email || 
+          (new Date(otp.expiresAt) > new Date() && !otp.isUsed)
+        );
 
-      const updatedOTPs = [...cleanedOTPs, newOTP];
-      await this.updateOTPs(updatedOTPs);
-      return newOTP;
+        const updatedOTPs = [...cleanedOTPs, newOTP];
+        await this.updateOTPs(updatedOTPs);
+        return newOTP;
+      } else {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.createOTP(email, code, expiryMinutes);
+      }
     } catch (error) {
       console.error('Error creating OTP:', error);
       throw new Error('Failed to create OTP');
@@ -174,16 +219,21 @@ class EdgeConfigService {
 
   async markOTPAsUsed(id: string): Promise<boolean> {
     try {
-      const otps = await this.getAllOTPs();
-      const otpIndex = otps.findIndex(otp => otp.id === id);
-      
-      if (otpIndex === -1) {
-        return false;
-      }
+      if (process.env.EDGE_CONFIG) {
+        const otps = await this.getAllOTPs();
+        const otpIndex = otps.findIndex(otp => otp.id === id);
+        
+        if (otpIndex === -1) {
+          return false;
+        }
 
-      otps[otpIndex].isUsed = true;
-      await this.updateOTPs(otps);
-      return true;
+        otps[otpIndex].isUsed = true;
+        await this.updateOTPs(otps);
+        return true;
+      } else {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.markOTPAsUsed(id);
+      }
     } catch (error) {
       console.error('Error marking OTP as used:', error);
       return false;
@@ -192,16 +242,21 @@ class EdgeConfigService {
 
   async incrementOTPAttempts(id: string): Promise<boolean> {
     try {
-      const otps = await this.getAllOTPs();
-      const otpIndex = otps.findIndex(otp => otp.id === id);
-      
-      if (otpIndex === -1) {
-        return false;
-      }
+      if (process.env.EDGE_CONFIG) {
+        const otps = await this.getAllOTPs();
+        const otpIndex = otps.findIndex(otp => otp.id === id);
+        
+        if (otpIndex === -1) {
+          return false;
+        }
 
-      otps[otpIndex].attempts += 1;
-      await this.updateOTPs(otps);
-      return true;
+        otps[otpIndex].attempts += 1;
+        await this.updateOTPs(otps);
+        return true;
+      } else {
+        const { fileStorage } = await import('./file-storage');
+        return fileStorage.incrementOTPAttempts(id);
+      }
     } catch (error) {
       console.error('Error incrementing OTP attempts:', error);
       return false;
@@ -230,40 +285,53 @@ class EdgeConfigService {
   // Initialize default users if no users exist
   async initializeDefaultUsers(): Promise<void> {
     try {
-      const users = await this.getAllUsers();
-      if (users.length === 0) {
-        // Import bcrypt dynamically to avoid issues
-        const bcrypt = await import('bcryptjs');
-        
-        const defaultUsers = [
-          {
-            email: 'binazure@gmail.com',
-            name: 'System Administrator',
-            password: await bcrypt.hash('admin123', 12),
-            role: 'admin' as const,
-            isActive: true,
-          },
-          {
-            email: 'member@celdeveloper.com',
-            name: 'Team Member',
-            password: await bcrypt.hash('member123', 12),
-            role: 'member' as const,
-            isActive: true,
-          },
-          {
-            email: 'customer@celdeveloper.com',
-            name: 'Customer User',
-            password: await bcrypt.hash('customer123', 12),
-            role: 'customer' as const,
-            isActive: true,
-          }
-        ];
+      if (process.env.EDGE_CONFIG) {
+        const users = await this.getAllUsers();
+        if (users.length === 0) {
+          // Import bcrypt dynamically to avoid issues
+          const bcrypt = await import('bcryptjs');
+          
+          const defaultUsers = [
+            {
+              email: 'binazure@gmail.com',
+              name: 'System Administrator',
+              password: await bcrypt.hash('admin123', 12),
+              role: 'admin' as const,
+              isActive: true,
+            },
+            {
+              email: 'member@celdeveloper.com',
+              name: 'Team Member',
+              password: await bcrypt.hash('member123', 12),
+              role: 'member' as const,
+              isActive: true,
+            },
+            {
+              email: 'customer@celdeveloper.com',
+              name: 'Customer User',
+              password: await bcrypt.hash('customer123', 12),
+              role: 'customer' as const,
+              isActive: true,
+            },
+            {
+              email: 'truongnh2299@gmail.com',
+              name: 'Truong Nguyen',
+              password: await bcrypt.hash('password123', 12),
+              role: 'member' as const,
+              isActive: true,
+            }
+          ];
 
-        for (const userData of defaultUsers) {
-          await this.createUser(userData);
+          for (const userData of defaultUsers) {
+            await this.createUser(userData);
+          }
+          
+          console.log('Default users created');
         }
-        
-        console.log('Default users created');
+      } else {
+        // Use file storage for initialization
+        const { fileStorage } = await import('./file-storage');
+        await fileStorage.initializeDefaultUsers();
       }
     } catch (error) {
       console.error('Error initializing default users:', error);

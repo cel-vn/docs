@@ -215,13 +215,20 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
         )}
 
         {/* Create User Button */}
-        <div className="mb-6">
+        <div className="mb-6 flex space-x-4">
           <button
             onClick={() => setShowCreateForm(!showCreateForm)}
             className="px-4 py-2 bg-fd-primary text-fd-primary-foreground font-medium rounded-lg hover:bg-fd-primary/90"
           >
             {showCreateForm ? 'Cancel' : 'Create New User'}
           </button>
+          
+          <Link
+            href="/admin/database"
+            className="px-4 py-2 border border-fd-border text-fd-foreground font-medium rounded-lg hover:bg-fd-muted transition-colors"
+          >
+            View Database
+          </Link>
         </div>
 
         {/* Create User Form */}

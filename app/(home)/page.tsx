@@ -174,6 +174,12 @@ export default function HomePage() {
             >
               Learn Project Management
             </Link>
+            <Link
+              href="/database"
+              className="px-8 py-3 border border-fd-border text-fd-foreground font-semibold rounded-lg hover:bg-fd-muted transition-colors"
+            >
+              View Database
+            </Link>
           </div>
         </div>
       </section>
