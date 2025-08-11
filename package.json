@@ -19,7 +19,7 @@
     "fumadocs-mdx": "11.2.1",
     "fumadocs-ui": "14.6.8",
     "jsonwebtoken": "^9.0.2",
-    "next": "15.1.2",
+    "next": "^15.1.2",
     "next-auth": "^4.24.11",
     "nodemailer": "^6.10.1",
     "react": "^19.0.0",
