@@ -55,11 +55,33 @@ export default function AdminDashboard({ user }: AdminDashboardProps) {
   };
 
   const handleLogout = async () => {
+    // Show confirmation dialog
+    const confirmed = window.confirm('Are you sure you want to logout from the admin dashboard?');
+    if (!confirmed) {
+      return;
+    }
+
     try {
-      await fetch('/api/auth/logout', { method: 'POST' });
-      router.push('/login');
+      const response = await fetch('/api/auth/logout', { 
+        method: 'POST',
+        credentials: 'include'
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        setMessage('Logged out successfully. Redirecting...');
+        
+        // Redirect to login page
+        setTimeout(() => {
+          router.push('/login');
+        }, 1000);
+      } else {
+        throw new Error(data.message || 'Logout failed');
+      }
     } catch (error) {
       console.error('Logout error:', error);
+      setMessage('Logout failed. Please try again.');
     }
   };
 

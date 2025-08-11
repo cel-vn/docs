@@ -6,7 +6,8 @@
     "role": "admin",
     "isActive": true,
     "id": "1754900188833-ivuhcluuf",
-    "createdAt": "2025-08-11T08:16:28.833Z"
+    "createdAt": "2025-08-11T08:16:28.833Z",
+    "lastLogin": "2025-08-11T10:00:39.961Z"
   },
   {
     "email": "member@celdeveloper.com",
@@ -34,6 +35,15 @@
     "isActive": true,
     "id": "1754900188838-iykj5h3s3",
     "createdAt": "2025-08-11T08:16:28.838Z",
-    "lastLogin": "2025-08-11T08:19:04.657Z"
+    "lastLogin": "2025-08-11T09:05:14.641Z"
+  },
+  {
+    "email": "testuser@example.com",
+    "name": "Test User",
+    "password": "$2b$12$DCe2GD3DHW3vDyQ4PL9By.6Y3b/U7PoGryRy8FR7DF9C5xK.x6wZy",
+    "role": "member",
+    "isActive": true,
+    "id": "1754905371111-mcfh6gl40",
+    "createdAt": "2025-08-11T09:42:51.111Z"
   }
 ]

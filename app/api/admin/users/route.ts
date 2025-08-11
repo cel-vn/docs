@@ -1,30 +1,43 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { authService } from '@/lib/auth';
-import { edgeConfigService } from '@/lib/edge-config';
+import { verifyToken } from '@/lib/auth';
+import { fileStorage } from '@/lib/file-storage';
 
 export async function GET(request: NextRequest) {
   try {
-    const userEmail = request.headers.get('x-user-email');
-    const userRole = request.headers.get('x-user-role');
+    // Get token from cookie
+    const token = request.cookies.get('auth-token')?.value;
 
-    if (!userEmail || userRole !== 'admin') {
+    if (!token) {
+      return NextResponse.json(
+        { success: false, message: 'No token provided' },
+        { status: 401 }
+      );
+    }
+
+    const user = verifyToken(token);
+    
+    if (!user || user.role !== 'admin') {
       return NextResponse.json(
         { success: false, message: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    const user = await edgeConfigService.getUserByEmail(userEmail);
-    if (!user) {
-      return NextResponse.json(
-        { success: false, message: 'User not found' },
-        { status: 404 }
-      );
-    }
-
-    const result = await authService.getAllUsers(user);
-    return NextResponse.json(result, {
-      status: result.success ? 200 : 400
+    const users = fileStorage.getAllUsers();
+    
+    return NextResponse.json({
+      success: true,
+      data: {
+        users: users.map(u => ({
+          id: u.id,
+          email: u.email,
+          name: u.name,
+          role: u.role,
+          isActive: u.isActive,
+          createdAt: u.createdAt,
+          lastLogin: u.lastLogin
+        }))
+      }
     });
   } catch (error) {
     console.error('Get users API error:', error);
@@ -37,21 +50,22 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const userEmail = request.headers.get('x-user-email');
-    const userRole = request.headers.get('x-user-role');
+    // Get token from cookie
+    const token = request.cookies.get('auth-token')?.value;
 
-    if (!userEmail || userRole !== 'admin') {
+    if (!token) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
+        { success: false, message: 'No token provided' },
         { status: 401 }
       );
     }
 
-    const user = await edgeConfigService.getUserByEmail(userEmail);
-    if (!user) {
+    const user = verifyToken(token);
+    
+    if (!user || user.role !== 'admin') {
       return NextResponse.json(
-        { success: false, message: 'User not found' },
-        { status: 404 }
+        { success: false, message: 'Unauthorized' },
+        { status: 401 }
       );
     }
 
@@ -71,9 +85,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await authService.createUser({ email, name, role }, user);
-    return NextResponse.json(result, {
-      status: result.success ? 201 : 400
+    // Check if user already exists
+    const existingUser = fileStorage.getUserByEmail(email);
+    if (existingUser) {
+      return NextResponse.json(
+        { success: false, message: 'User with this email already exists' },
+        { status: 400 }
+      );
+    }
+
+    // Import bcrypt dynamically
+    const bcrypt = await import('bcryptjs');
+    
+    // Create new user with default password
+    const defaultPassword = 'newuser123';
+    const hashedPassword = await bcrypt.hash(defaultPassword, 12);
+
+    const newUser = fileStorage.createUser({
+      email,
+      name,
+      password: hashedPassword,
+      role,
+      isActive: true
+    });
+
+    return NextResponse.json({
+      success: true,
+      message: `User created successfully. Default password: ${defaultPassword}`,
+      data: {
+        user: {
+          id: newUser.id,
+          email: newUser.email,
+          name: newUser.name,
+          role: newUser.role,
+          isActive: newUser.isActive,
+          createdAt: newUser.createdAt
+        }
+      }
     });
   } catch (error) {
     console.error('Create user API error:', error);

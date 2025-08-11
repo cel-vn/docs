@@ -1,5 +1,5 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
-import AuthButton from '@/components/AuthButton';
+import AuthButton from "@/components/AuthButton";
 
 /**
  * Shared layout configurations
@@ -32,11 +32,6 @@ export const baseOptions: BaseLayoutProps = {
     {
       text: "Log work",
       url: "/docs",
-      active: "nested-url",
-    },
-    {
-      text: "Login",
-      url: "/login",
       active: "nested-url",
     },
   ],

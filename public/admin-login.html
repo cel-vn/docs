@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Login Helper</title>
+</head>
+<body>
+    <h1>Admin Login Helper</h1>
+    <p>Click the button below to log in as admin and then navigate to the dashboard:</p>
+    <button onclick="loginAsAdmin()">Login as Admin</button>
+    
+    <script>
+    async function loginAsAdmin() {
+        try {
+            // Step 1: Send login request
+            console.log('Sending login request...');
+            const loginResponse = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: 'binazure@gmail.com',
+                    password: 'admin123'
+                })
+            });
+            
+            const loginData = await loginResponse.json();
+            console.log('Login response:', loginData);
+            
+            if (!loginData.success) {
+                alert('Login failed: ' + loginData.message);
+                return;
+            }
+            
+            // Step 2: Get OTP from storage
+            alert('Getting OTP from storage...');
+            const otpResponse = await fetch('/api/dev/get-otp?email=binazure@gmail.com');
+            const otpData = await otpResponse.json();
+            
+            if (!otpData.success) {
+                alert('Failed to get OTP: ' + otpData.message);
+                return;
+            }
+            
+            console.log('OTP:', otpData.otp);
+            
+            // Step 3: Verify OTP
+            const verifyResponse = await fetch('/api/auth/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: 'binazure@gmail.com',
+                    code: otpData.otp
+                })
+            });
+            
+            const verifyData = await verifyResponse.json();
+            console.log('Verify response:', verifyData);
+            
+            if (verifyData.success) {
+                alert('Login successful! Redirecting to admin dashboard...');
+                window.location.href = '/admin/dashboard';
+            } else {
+                alert('Verification failed: ' + verifyData.message);
+            }
+            
+        } catch (error) {
+            console.error('Login error:', error);
+            alert('Login failed: ' + error.message);
+        }
+    }
+    </script>
+</body>
+</html>

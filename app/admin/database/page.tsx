@@ -4,7 +4,7 @@ import { verifyToken } from '@/lib/auth';
 import DatabaseViewer from '@/components/DatabaseViewer';
 
 export default async function DatabasePage() {
-  const cookieStore = cookies();
+  const cookieStore = await cookies();
   const token = cookieStore.get('auth-token')?.value;
 
   if (!token) {

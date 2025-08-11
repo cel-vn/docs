@@ -2,26 +2,31 @@ import { NextRequest, NextResponse } from 'next/server';
 import { authService } from '@/lib/auth';
 import { edgeConfigService } from '@/lib/edge-config';
 
+import { NextRequest, NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/auth';
+import { fileStorage } from '@/lib/file-storage';
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const userEmail = request.headers.get('x-user-email');
-    const userRole = request.headers.get('x-user-role');
+    // Get token from cookie
+    const token = request.cookies.get('auth-token')?.value;
 
-    if (!userEmail || userRole !== 'admin') {
+    if (!token) {
       return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
+        { success: false, message: 'No token provided' },
         { status: 401 }
       );
     }
 
-    const user = await edgeConfigService.getUserByEmail(userEmail);
-    if (!user) {
+    const user = verifyToken(token);
+    
+    if (!user || user.role !== 'admin') {
       return NextResponse.json(
-        { success: false, message: 'User not found' },
-        { status: 404 }
+        { success: false, message: 'Unauthorized' },
+        { status: 401 }
       );
     }
 
@@ -34,9 +39,19 @@ export async function PATCH(
       );
     }
 
-    const result = await authService.updateUserStatus(params.id, isActive, user);
-    return NextResponse.json(result, {
-      status: result.success ? 200 : 400
+    const updatedUser = fileStorage.updateUser(params.id, { isActive });
+    
+    if (!updatedUser) {
+      return NextResponse.json(
+        { success: false, message: 'User not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: `User ${isActive ? 'activated' : 'deactivated'} successfully`,
+      data: { user: updatedUser }
     });
   } catch (error) {
     console.error('Update user status API error:', error);
@@ -52,17 +67,26 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    const userEmail = request.headers.get('x-user-email');
-    const userRole = request.headers.get('x-user-role');
+    // Get token from cookie
+    const token = request.cookies.get('auth-token')?.value;
 
-    if (!userEmail || userRole !== 'admin') {
+    if (!token) {
+      return NextResponse.json(
+        { success: false, message: 'No token provided' },
+        { status: 401 }
+      );
+    }
+
+    const user = verifyToken(token);
+    
+    if (!user || user.role !== 'admin') {
       return NextResponse.json(
         { success: false, message: 'Unauthorized' },
         { status: 401 }
       );
     }
 
-    const deleted = await edgeConfigService.deleteUser(params.id);
+    const deleted = fileStorage.deleteUser(params.id);
     
     if (!deleted) {
       return NextResponse.json(
