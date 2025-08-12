@@ -1,3 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+/* Fumadocs UI styles (Tailwind v4-based) */
+@import 'fumadocs-ui/style.css';
+
+/* Overrides: navigation items spacing */
+#nd-nav nav > ul {
+	gap: 0.75rem !important; /* equals Tailwind gap-3 */
+}

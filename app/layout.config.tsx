@@ -1,5 +1,4 @@
 import type { BaseLayoutProps } from "fumadocs-ui/layouts/shared";
-import AuthButton from "@/components/AuthButton";
 
 /**
  * Shared layout configurations
@@ -11,7 +10,6 @@ import AuthButton from "@/components/AuthButton";
 export const baseOptions: BaseLayoutProps = {
   nav: {
     title: "CEL Developer",
-    children: <AuthButton />,
   },
   links: [
     {
@@ -22,16 +20,6 @@ export const baseOptions: BaseLayoutProps = {
      {
       text: "Project management",
       url: "/project-management",
-      active: "nested-url",
-    },
-    {
-      text: "Report issues",
-      url: "/report-issues",
-      active: "nested-url",
-    },
-    {
-      text: "Log work",
-      url: "/docs",
       active: "nested-url",
     },
   ],
