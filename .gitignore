@@ -5,6 +5,7 @@
 .contentlayer
 .content-collections
 .source
+.storage/
 
 # test & build
 /coverage
@@ -24,5 +25,28 @@ yarn-error.log*
 
 # others
 .env*.local
+.env
 .vercel
 next-env.d.ts
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS generated files
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs
+*.log
+
+# Optional caches
+.npm
+.eslintcache

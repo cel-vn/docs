@@ -1,8 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { authService } from '@/lib/auth';
-import { edgeConfigService } from '@/lib/edge-config';
-
-import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken } from '@/lib/auth';
 import { fileStorage } from '@/lib/file-storage';
 
