@@ -1,13 +1,209 @@
 ---
-title: Hello World
-description: Your first document
+title: CEL Developer Documentation
+description: Comprehensive documentation for the CEL Developer platform with AI-powered content generation
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+# Welcome to CEL Developer Documentation
 
-## What is Next?
+This documentation platform combines Next.js, Fumadocs, and AI-powered content generation to provide comprehensive technical documentation and user management capabilities.
+
+## 🚀 Quick Start
+
+Get started with the platform in minutes:
+
+1. **Development Setup** - Clone and run the development server
+2. **Authentication** - Login with your credentials or create an account
+3. **Explore Content** - Browse documentation and project management guides
+4. **Admin Features** - Access admin dashboard for user management (admin only)
+
+## 📚 Core Documentation
 
 <Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.vercel.app" />
+  <Card 
+    title="System Architecture" 
+    href="/docs/architecture"
+    description="Comprehensive overview of the platform's technical architecture, components, and data flow"
+  />
+  <Card 
+    title="AI Generation Rules" 
+    href="/docs/ai-generation-rules"
+    description="Guidelines and best practices for AI-powered content generation and documentation standards"
+  />
+  <Card 
+    title="Authentication Guide" 
+    href="/docs/authentication"
+    description="User authentication, role-based access control, and security features"
+  />
+  <Card 
+    title="Project Management" 
+    href="/project-management"
+    description="Project management methodologies, best practices, and workflow documentation"
+  />
 </Cards>
+
+## 🔧 Platform Features
+
+### Documentation Management
+- **Live Preview** - Real-time MDX rendering with syntax highlighting
+- **AI-Enhanced Content** - Automated documentation generation from code
+- **Search Integration** - Full-text search across all documentation
+- **Version Control** - Git-based content management and history
+
+### User Management
+- **Role-Based Access** - Admin, member, and customer permission levels
+- **Secure Authentication** - JWT tokens with OTP email verification
+- **Admin Dashboard** - Complete user CRUD operations and analytics
+- **Profile Management** - User preferences and activity tracking
+
+### Technical Stack
+- **Next.js 15.1.2** - React framework with App Router
+- **Fumadocs** - Documentation framework with MDX support
+- **TypeScript** - Type-safe development environment
+- **Tailwind CSS** - Utility-first styling framework
+
+## 🎯 Getting Started
+
+### For Developers
+
+```bash
+# Clone the repository
+git clone https://github.com/cel-vn/docs.git
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Open in browser
+open http://localhost:3000
+```
+
+### For Content Contributors
+
+1. **Login** - Access the platform with your credentials
+2. **Navigate** - Use the sidebar to explore existing documentation
+3. **Contribute** - Create or edit MDX files in the `/content` directory
+4. **Preview** - See changes in real-time with hot reloading
+
+### For Administrators
+
+1. **Admin Dashboard** - Access user management at `/admin/dashboard`
+2. **User Creation** - Add new users with role assignments
+3. **Database Viewer** - Monitor system data at `/admin/database`
+4. **System Management** - Configure permissions and settings
+
+## 🏗️ Architecture Overview
+
+The platform is built with a modern, scalable architecture:
+
+```
+┌─────────────────────────────────────────────────┐
+│                 Frontend Layer                   │
+├─────────────────────────────────────────────────┤
+│  Next.js App Router  │  Fumadocs UI Components  │
+├─────────────────────────────────────────────────┤
+│                 API Layer                       │
+├─────────────────────────────────────────────────┤
+│  Authentication     │  User Management         │
+│  Content APIs       │  Admin Operations        │
+├─────────────────────────────────────────────────┤
+│                 Data Layer                      │
+├─────────────────────────────────────────────────┤
+│  File Storage       │  MDX Content            │
+│  User Database      │  Configuration           │
+└─────────────────────────────────────────────────┘
+```
+
+## 🤖 AI-Powered Features
+
+### Content Generation
+- **Automatic Documentation** - Generate docs from code annotations
+- **Architecture Diagrams** - Create system visualizations
+- **Code Examples** - Generate working code snippets
+- **Cross-References** - Intelligent linking between related topics
+
+### Quality Assurance
+- **Content Validation** - Verify technical accuracy
+- **Style Consistency** - Maintain uniform documentation style
+- **Link Checking** - Ensure all references are valid
+- **Performance Optimization** - Optimize for fast loading
+
+## 📖 Documentation Guidelines
+
+### Writing Standards
+- **Clear Structure** - Use semantic headings and logical organization
+- **Code Examples** - Include working, tested code snippets
+- **Visual Aids** - Add diagrams, screenshots, and illustrations
+- **Cross-References** - Link to related documentation sections
+
+### AI Content Rules
+- **Technical Accuracy** - All generated content must be factually correct
+- **Human Review** - AI-generated content requires human validation
+- **Version Alignment** - Keep documentation synchronized with code changes
+- **User-Centric** - Focus on practical, actionable information
+
+## 🔐 Security & Access
+
+### Authentication
+- **Email Verification** - OTP-based secure login process
+- **JWT Tokens** - Secure session management with HTTP-only cookies
+- **Role-Based Access** - Granular permissions for different user types
+- **Session Management** - Automatic logout and session timeout
+
+### Data Protection
+- **Sensitive Data** - User credentials and personal information protected
+- **Environment Variables** - Secure configuration management
+- **File Storage** - Development data excluded from version control
+- **HTTPS Only** - Secure communication in production
+
+## 🚀 Deployment & Operations
+
+### Development
+- **Local Development** - File-based storage for rapid iteration
+- **Hot Reloading** - Real-time updates during development
+- **Debug Tools** - Comprehensive logging and error tracking
+- **Testing Environment** - Automated testing and validation
+
+### Production
+- **Vercel Deployment** - Optimized hosting with global CDN
+- **Edge Configuration** - Distributed configuration management
+- **Performance Monitoring** - Real-time performance metrics
+- **Automated Backups** - Regular data backup and recovery
+
+## 📊 Analytics & Monitoring
+
+### Usage Metrics
+- **Page Views** - Track documentation usage patterns
+- **User Engagement** - Monitor time spent and bounce rates
+- **Search Analytics** - Optimize content based on search queries
+- **Error Tracking** - Identify and resolve issues quickly
+
+### Performance Metrics
+- **Load Times** - Monitor page performance and optimization
+- **API Response** - Track backend performance and reliability
+- **User Experience** - Measure satisfaction and usability
+- **Content Quality** - Assess documentation effectiveness
+
+## 🤝 Contributing
+
+We welcome contributions to improve the platform and documentation:
+
+1. **Fork** the repository
+2. **Create** a feature branch
+3. **Make** your changes
+4. **Test** thoroughly
+5. **Submit** a pull request
+
+For major changes, please open an issue first to discuss the proposed changes.
+
+## 📞 Support
+
+- **Documentation Issues** - Report bugs or suggest improvements
+- **Feature Requests** - Submit ideas for new functionality
+- **Technical Support** - Get help with implementation questions
+- **Community** - Join discussions and share knowledge
+
+---
+
+*This documentation is continuously updated through AI-human collaboration to ensure accuracy and relevance.*

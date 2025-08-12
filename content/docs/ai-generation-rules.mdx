@@ -1,0 +1,258 @@
+---
+title: AI Content Generation Rules
+description: Comprehensive guidelines for AI-generated documentation and architecture
+---
+
+# AI Content Generation Rules for Fumadocs
+
+This document outlines the comprehensive rules and guidelines for AI-generated content within the CEL Developer documentation platform.
+
+## 🎯 Core Principles
+
+### 1. Content Quality Standards
+
+#### Accuracy Requirements
+- **Technical Precision** - All code examples must be syntactically correct and functional
+- **Version Consistency** - Content must align with the current software versions
+- **Fact Verification** - Claims and statements should be verifiable against source materials
+- **Link Validation** - All external references must be active and relevant
+
+#### Clarity Guidelines
+- **Simple Language** - Use accessible terminology with technical jargon explanations
+- **Logical Flow** - Organize content in a logical, progressive manner
+- **Clear Examples** - Provide concrete, real-world examples for abstract concepts
+- **Visual Hierarchy** - Use headings, lists, and formatting for scanability
+
+### 2. Documentation Structure Rules
+
+#### Semantic Organization
+```markdown
+# Main Topic (H1) - One per document
+## Major Sections (H2) - Primary content divisions
+### Subsections (H3) - Detailed breakdowns
+#### Details (H4) - Specific implementations
+##### Examples (H5) - Code samples and use cases
+###### Notes (H6) - Additional information
+```
+
+#### Content Patterns
+- **Introduction** - Overview and objectives
+- **Prerequisites** - Required knowledge and setup
+- **Step-by-Step** - Numbered procedures with validation
+- **Examples** - Working code with explanations
+- **Troubleshooting** - Common issues and solutions
+- **Next Steps** - Related topics and advanced concepts
+
+## 🏗️ Architecture Documentation Rules
+
+### 1. System Architecture
+
+#### Component Documentation Standards
+```typescript
+/**
+ * Component Architecture Template
+ * 
+ * @purpose: Brief description of component function
+ * @dependencies: List of required dependencies
+ * @inputs: Expected props/parameters
+ * @outputs: Return values/side effects
+ * @examples: Usage examples with code
+ */
+```
+
+#### Architectural Diagrams
+- **System Overview** - High-level component relationships
+- **Data Flow** - Information movement through the system
+- **User Journey** - Step-by-step user interactions
+- **API Architecture** - Endpoint organization and relationships
+
+### 2. Code Documentation Rules
+
+#### Function Documentation
+```typescript
+/**
+ * Generates AI-powered documentation for the given component
+ * 
+ * @param component - React component to document
+ * @param options - Configuration options for generation
+ * @returns Promise<DocumentationResult> - Generated documentation object
+ * 
+ * @example
+ * ```typescript
+ * const docs = await generateDocumentation(MyComponent, {
+ *   includeProps: true,
+ *   includeExamples: true
+ * });
+ * ```
+ */
+```
+
+#### API Endpoint Documentation
+```typescript
+/**
+ * POST /api/content/generate
+ * 
+ * Generates AI-powered content based on provided specifications
+ * 
+ * @body {ContentRequest} - Content generation parameters
+ * @returns {ContentResponse} - Generated content with metadata
+ * 
+ * @example
+ * curl -X POST /api/content/generate \
+ *   -H "Content-Type: application/json" \
+ *   -d '{"type": "component", "source": "UserProfile"}'
+ */
+```
+
+## 📝 Content Generation Workflows
+
+### 1. Automated Documentation Pipeline
+
+#### Code Analysis Phase
+1. **AST Parsing** - Extract component structure and types
+2. **Dependency Mapping** - Identify imports and relationships
+3. **Usage Pattern Detection** - Find common implementation patterns
+4. **Example Extraction** - Collect existing usage examples
+
+#### Content Generation Phase
+1. **Template Selection** - Choose appropriate documentation template
+2. **Content Assembly** - Combine analysis with generated explanations
+3. **Example Creation** - Generate working code examples
+4. **Cross-Reference Building** - Link related components and concepts
+
+#### Quality Assurance Phase
+1. **Syntax Validation** - Verify all code examples compile
+2. **Link Checking** - Ensure all references are valid
+3. **Accessibility Review** - Check for WCAG compliance
+4. **Performance Analysis** - Validate load times and optimization
+
+### 2. Human-AI Collaboration Rules
+
+#### AI Responsibilities
+- **Content Generation** - Create initial drafts and structures
+- **Code Analysis** - Extract technical information from source
+- **Pattern Recognition** - Identify documentation opportunities
+- **Consistency Checking** - Maintain style and format standards
+
+#### Human Responsibilities
+- **Strategic Direction** - Define documentation goals and audience
+- **Quality Review** - Validate accuracy and relevance
+- **Creative Input** - Add context, insights, and narrative
+- **Final Approval** - Authorize publication of generated content
+
+## 🔧 Technical Implementation
+
+### 1. AI Model Configuration
+
+#### Content Generation Models
+```typescript
+interface AIModelConfig {
+  model: 'gpt-4' | 'claude-3' | 'custom';
+  temperature: number; // 0.1-1.0 for creativity control
+  maxTokens: number; // Output length limit
+  systemPrompt: string; // Context and guidelines
+}
+
+const documentationConfig: AIModelConfig = {
+  model: 'gpt-4',
+  temperature: 0.3, // Balanced creativity and consistency
+  maxTokens: 4000,
+  systemPrompt: 'Generate technical documentation following CEL standards...'
+};
+```
+
+#### Quality Metrics
+```typescript
+interface QualityMetrics {
+  readabilityScore: number; // Flesch-Kincaid readability
+  technicalAccuracy: number; // Code syntax validation
+  completeness: number; // Coverage of required sections
+  consistency: number; // Style and terminology alignment
+}
+```
+
+### 2. Integration Points
+
+#### Fumadocs Integration
+- **MDX Processing** - AI-generated content in MDX format
+- **Component Registry** - Auto-documentation of React components
+- **Search Integration** - AI-enhanced search capabilities
+- **Navigation Generation** - Automatic table of contents
+
+#### Development Workflow
+- **Pre-commit Hooks** - Generate docs before commits
+- **CI/CD Integration** - Update documentation in deployment pipeline
+- **Live Reloading** - Real-time preview of generated content
+- **Version Synchronization** - Keep docs aligned with code changes
+
+## 📊 Metrics and Monitoring
+
+### 1. Content Quality Metrics
+
+#### Automated Measurements
+- **Code Accuracy** - Percentage of working code examples
+- **Link Validity** - Ratio of functional to broken links
+- **Content Freshness** - Time since last update vs. code changes
+- **User Engagement** - Page views, time on page, bounce rate
+
+#### Manual Review Criteria
+- **Technical Depth** - Appropriate level of detail for audience
+- **Practical Utility** - Real-world applicability of examples
+- **Clarity Rating** - Understandability for target users
+- **Completeness Score** - Coverage of all necessary topics
+
+### 2. Performance Tracking
+
+#### Generation Efficiency
+```typescript
+interface GenerationMetrics {
+  averageGenerationTime: number; // seconds
+  successRate: number; // percentage
+  retryCount: number; // failed attempts
+  resourceUsage: {
+    cpu: number;
+    memory: number;
+    tokens: number;
+  };
+}
+```
+
+#### User Satisfaction
+- **Feedback Scores** - User ratings on helpfulness
+- **Task Completion** - Success rate for documentation goals
+- **Search Success** - Ability to find needed information
+- **Error Reports** - Issues identified by users
+
+## 🚀 Continuous Improvement
+
+### 1. Feedback Loop Implementation
+
+#### Data Collection
+- **User Interactions** - Track which sections are most accessed
+- **Error Tracking** - Log technical issues and inaccuracies
+- **Performance Metrics** - Monitor generation speed and quality
+- **Version Impact** - Measure documentation decay over time
+
+#### Model Training
+- **Fine-tuning** - Improve AI models based on successful outputs
+- **Template Evolution** - Refine documentation templates
+- **Style Guide Updates** - Enhance guidelines based on learnings
+- **Quality Threshold Adjustment** - Optimize acceptance criteria
+
+### 2. Future Enhancements
+
+#### Planned Features
+- **Multi-language Support** - Generate docs in multiple languages
+- **Interactive Tutorials** - AI-powered step-by-step guides
+- **Video Integration** - Auto-generated video explanations
+- **Personalization** - User-specific documentation experiences
+
+#### Research Areas
+- **Code-to-Docs Automation** - Direct code-to-documentation pipelines
+- **Natural Language Queries** - Conversational documentation interface
+- **Visual Documentation** - AI-generated diagrams and illustrations
+- **Contextual Help** - In-app documentation assistance
+
+---
+
+*This document is maintained through AI-human collaboration and updated regularly to reflect best practices and technological advances.*
